@@ -78,8 +78,11 @@ namespace Summer_school_mvc.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "StudentID,FirstName,LastName,EnrollmentFee")] Student student)
+        //remove EnrollmentFee and add code into the beginning of the method
+        public ActionResult Edit([Bind(Include = "StudentID,FirstName,LastName")] Student student)
         {
+            student.EnrollmentFee = 15;
+
             if (ModelState.IsValid)
             {
                 db.Entry(student).State = EntityState.Modified;
