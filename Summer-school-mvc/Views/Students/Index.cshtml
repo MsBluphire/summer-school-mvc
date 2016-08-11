@@ -4,10 +4,23 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>@ViewBag.Message</h2>
 
 <p>
-    @Html.ActionLink("Enroll", "Create")
+    @if (Model.Count() < ViewBag.MaximumEnrollment)
+    {
+        <a class="btn btn-link" href="@Url.Action("Create")">Enroll</a>
+    }
+    else
+    {
+        <span>Enrollment is closed.</span>
+    }
+    </p>
+@using (Html.BeginForm())
+{
+    <p>Find by name: @Html.TextBox("search")
+    <input type="submit" value="LOOK FOR THEM" /></p>
+}
 </p>
 <table class="table">
     <tr>
@@ -43,3 +56,7 @@
 }
 
 </table>
+
+<div class="student-total">
+    <b class="amount-label">Total Student Enrollment:</b> <span class="amount">@String.Format("{0:C}", ViewBag.TotalEnrollmentFee)</span>
+</div>

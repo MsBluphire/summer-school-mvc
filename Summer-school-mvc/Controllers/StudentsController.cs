@@ -15,9 +15,23 @@ namespace Summer_school_mvc.Controllers
         private Entities db = new Entities();
 
         // GET: Students
-        public ActionResult Index()
+        public ActionResult Index(string search)
         {
-            return View(db.Students.ToList());
+
+            var students = from item in db.Students
+                           select item;
+
+            if(!String.IsNullOrEmpty(search))
+            {
+                students = from item in students
+                           where item.LastName.Contains(search) ||
+                           item.FirstName.Contains(search)
+                           select item;
+            }
+
+            ViewBag.TotalEnrollmentFee = totalFees();
+            ViewBag.MaximumEnrollment = 15;
+            return View(students);
         }
 
         // GET: Students/Details/5
@@ -61,6 +75,17 @@ namespace Summer_school_mvc.Controllers
             }
             return (int)cost;
         }
+
+        public decimal totalFees()
+        {
+            decimal runningTotal = 0;
+            foreach (Student student in db.Students)
+            {
+                runningTotal = runningTotal + student.EnrollmentFee;
+            }
+            return runningTotal;
+        }
+
 
         // POST: Students/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
