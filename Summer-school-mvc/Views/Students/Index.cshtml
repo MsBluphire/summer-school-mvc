@@ -7,7 +7,8 @@
 <h2>@ViewBag.Message</h2>
 
 <p>
-    @if (Model.Count() < ViewBag.MaximumEnrollment)
+    @ViewBag.CurrentEnrollment students currently enrolled.
+    @if (ViewBag.CurrentEnrollment < ViewBag.MaximumEnrollment)
     {
         <a class="btn btn-link" href="@Url.Action("Create")">Enroll</a>
     }
