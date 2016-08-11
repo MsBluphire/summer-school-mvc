@@ -41,6 +41,27 @@ namespace Summer_school_mvc.Controllers
             return View();
         }
 
+        int calculateEnrollmentFee(string firstName, string lastName)
+        {
+            double cost = 200;
+
+            if(lastName.ToLower() =="potter")
+            {
+                cost *= 0.5;
+            }
+            int numberOfStudents = db.Students.Count();
+
+            if(lastName.ToLower() == "longbottom" && numberOfStudents <= 10)
+            {
+                cost = 0;
+            }
+            if(firstName.ToLower()[0] == lastName.ToLower()[0])
+            {
+                cost = 0.9 * cost;
+            }
+            return (int)cost;
+        }
+
         // POST: Students/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -48,6 +69,8 @@ namespace Summer_school_mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "StudentID,FirstName,LastName,EnrollmentFee")] Student student)
         {
+            student.EnrollmentFee = calculateEnrollmentFee(student.FirstName, student.LastName);
+
             if (ModelState.IsValid)
             {
                 db.Students.Add(student);
@@ -79,10 +102,9 @@ namespace Summer_school_mvc.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //remove EnrollmentFee and add code into the beginning of the method
-        public ActionResult Edit([Bind(Include = "StudentID,FirstName,LastName")] Student student)
+        public ActionResult Edit([Bind(Include = "StudentID,FirstName,LastName,EnrollmentFee")] Student student)
         {
-            student.EnrollmentFee = 15;
-
+                    
             if (ModelState.IsValid)
             {
                 db.Entry(student).State = EntityState.Modified;
@@ -91,8 +113,10 @@ namespace Summer_school_mvc.Controllers
             }
             return View(student);
         }
-
+       
         // GET: Students/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public ActionResult Delete(int? id)
         {
             if (id == null)
